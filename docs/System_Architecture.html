@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital School Report System - Architecture & Flow Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --text: #333;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 50px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        h2 { color: var(--secondary); border-left: 5px solid var(--accent); padding-left: 15px; margin-top: 40px; }
+        h3 { color: var(--accent); }
+        p { margin-bottom: 20px; text-align: justify; }
+        .diagram-container {
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .info-box {
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent);
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background-color: var(--primary); color: white; }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        @media print {
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; width: 100%; max-width: none; padding: 20px; }
+            .no-print { display: none; }
+        }
+        .btn-print {
+            background: var(--accent);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <button class="btn-print no-print" onclick="window.print()">Download as PDF</button>
+        
+        <header>
+            <h1>Digital School Report System</h1>
+            <p><strong>System Architecture & Process Flow Documentation</strong></p>
+            <p>Prepared for: Homisdallen Primary School (Gayaza, Kyebando, Kamwokya)</p>
+            <p>Date: May 4, 2026</p>
+        </header>
+
+        <section id="overview">
+            <h2>1. System Overview</h2>
+            <p>
+                The Digital School Report System is a web-based management platform designed to automate the academic reporting process for multi-branch primary schools. 
+                The system features Role-Based Access Control (RBAC), offline capabilities via PWA integration, and comprehensive student lifecycle management from registration to report card generation.
+            </p>
+            <div class="info-box">
+                <strong>Key Technology Stack:</strong>
+                <ul>
+                    <li><strong>Backend:</strong> PHP 8.x with PDO</li>
+                    <li><strong>Database:</strong> MySQL / MariaDB</li>
+                    <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript</li>
+                    <li><strong>Offline:</strong> Service Workers & Manifest (PWA)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="er-diagram">
+            <h2>2. Entity-Relationship (ER) Diagram</h2>
+            <p>The following diagram illustrates the data structure and relationships within the system database.</p>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    erDiagram
+                        SCHOOLS ||--o{ USERS : "manages"
+                        SCHOOLS ||--o{ STUDENTS : "hosts"
+                        SCHOOLS ||--o{ SUBJECTS : "offers"
+                        
+                        USERS ||--|| STUDENTS : "profile_of"
+                        USERS ||--o{ MARKS : "records"
+                        USERS ||--o{ AUDIT_LOGS : "performs"
+                        
+                        STUDENTS ||--o{ MARKS : "earns"
+                        STUDENTS ||--o{ FEES_STATUS : "billed_to"
+                        STUDENTS ||--o{ DISCIPLINE_RECORDS : "associated_with"
+                        
+                        ACADEMIC_PERIODS ||--o{ MARKS : "period_of"
+                        ACADEMIC_PERIODS ||--o{ FEES_STATUS : "term_of"
+                        SUBJECTS ||--o{ MARKS : "evaluated_in"
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Entity</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Schools</strong></td>
+                        <td>Stores branch information (Gayaza, Kyebando, Kamwokya).</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Users</strong></td>
+                        <td>Core authentication table for Admins, Teachers, and Students.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Students</strong></td>
+                        <td>Extended profile data including guardian info, address, and age.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Marks</strong></td>
+                        <td>Academic performance data (Mid-term, End-term, Grades).</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="system-flow">
+            <h2>3. System Outflow (User Journey)</h2>
+            <p>This flow chart details how different users interact with the system modules.</p>
+            <div class="diagram-container">
+                <div class="mermaid">
+                    graph TD
+                        A[Visitor] --> B{Login/Register}
+                        B -->|Register| C[Detailed Registration Form]
+                        C -->|Save| D[(Database)]
+                        D --> B
+                        
+                        B -->|Login| E{Role Dashboard}
+                        
+                        E -->|Student| S1[View Dashboard]
+                        S1 --> S2[Academic History]
+                        S1 --> S3[View Report Card]
+                        S3 --> S4{Fees Paid?}
+                        S4 -->|No| S5[Access Blocked]
+                        S4 -->|Yes| S6[Download PDF Report]
+                        
+                        E -->|Teacher| T1[Manage Classes]
+                        T1 --> T2[Select Student]
+                        T2 --> T3[Enter Marks/Remarks]
+                        T3 --> T4[Generate Class List]
+                        
+                        E -->|Bursar| B1[Fee Management]
+                        B1 --> B2[Update Payments]
+                        B2 --> B3[Set Block/Unblock Status]
+                        
+                        E -->|Admin| A1[System Config]
+                        A1 --> A2[Manage Schools/Users]
+                        A1 --> A3[Setup Academic Terms]
+                </div>
+            </div>
+        </section>
+
+        <section id="registration-details">
+            <h2>4. Detailed Registration Process</h2>
+            <p>
+                The registration module is dynamically built to capture comprehensive student data. 
+                When a user selects the <strong>Student</strong> role, the system activates conditional logic to collect:
+            </p>
+            <ul>
+                <li><strong>Student Identity:</strong> Full Name, DOB, Age, Nationality, and LIN Number.</li>
+                <li><strong>Academic Context:</strong> School Branch selection and Current Class assignment.</li>
+                <li><strong>Guardian Context:</strong> Name, Phone, Profession, and Place of Work.</li>
+                <li><strong>Health/Social Status:</strong> Optional tracking for chronic conditions or orphan status.</li>
+            </ul>
+        </section>
+
+        <section id="offline-pwa">
+            <h2>5. PWA & Offline Functionality</h2>
+            <p>
+                To ensure reliability in areas with intermittent connectivity, the system implements Progressive Web App standards:
+            </p>
+            <div class="info-box">
+                <ul>
+                    <li><strong>Service Worker:</strong> Caches core CSS, JS, and UI assets for instant loading.</li>
+                    <li><strong>Manifest:</strong> Allows the system to be installed on Windows/macOS desktops as a standalone app.</li>
+                    <li><strong>Data Persistence:</strong> Cached report cards remain viewable even when the server is unreachable.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="footer">
+            <p>&copy; 2026 Digital School Report System | Homisdallen Primary School</p>
+            <p class="no-print">Generated by Trae Code Assistant</p>
+        </div>
+    </div>
+</body>
+</html>
